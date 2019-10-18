@@ -1,0 +1,33 @@
+
+Computer systems programming involves developing software to connect the
+low-level computer hardware to high-level, user-facing application
+software and usually requires careful consideration of performance and
+resource constraints. Examples of computer systems software include
+compilers, operating systems, databases, numerical libraries, and
+embedded controllers.
+
+This course aims to provide a strong foundation in computer systems
+programming using C and C++, the languages of choice for system-level
+programmers. The course is structured into three parts. In the first
+part, students will learn basic C programming (e.g., static typing,
+functions, control flow, arrays, strings, pointers, dynamic memory
+management); students will then apply their knowledge of C to explore
+basic algorithmic techniques (e.g., recursion, divide-and-conquer,
+dynamic programming), basic algorithms (e.g., sorting), and basic data
+structures (e.g., lists, stacks, queues, sets, maps). In the second part,
+students will learn more advanced C++ programming (e.g., objects,
+inheritance, polymorphism, templates); students will then apply their
+knowledge of C++ to explore more advanced algorithms and data structures
+(e.g., binary search trees, priority queues, hash tables, graphs,
+spanning trees). In the third part, students will explore systems
+programming in the UNIX environment using POSIX I/O, processes, and
+threads.
+
+The course includes a strong emphasis on both theoretical and practical
+design trade-offs. A series of programming assignments enable students to
+apply what they have learned to interesting real-world problems and to
+gain experience with version control, continuous integration, debugging,
+profiling, and code optimization. In the final two programming
+assignments, students will work in pairs to implement a simple in-memory
+caching database and a high-performance financial trading system.
+
