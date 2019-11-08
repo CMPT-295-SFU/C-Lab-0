@@ -6,7 +6,23 @@
 # found and will fail if it is not found.
 
 language: bash
+addons:
+  ssh_known_hosts: 199.60.17.67
 
 script:
-    - grep blueberry fruit.txt
+  - grep blueberry fruit.txt
+  - "grep blueberry fruit.tx >> LOG"
+  - "FILENAME=`basename $TRAVIS_REPO_SLUG`"
+  - mv LOG ${TRAVIS_BUILD_DIR}/$FILENAME.log
 
+before_install:
+  - cd ${TRAVIS_BUILD_DIR}
+  - bash scripts/setup_grader.sh
+
+after_failure:
+  - cd ${TRAVIS_BUILD_DIR}
+  - bash scripts/fail.sh
+
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}
+  - bash scripts/fail.sh
