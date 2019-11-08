@@ -12,7 +12,7 @@ addons:
 script:
   - grep blueberry fruit.txt
   - "git log --pretty=format:'Name:%cn %nHash:%H%nTimestamp=%ci' -n 1 >> LOG"
-  - "grep blueberry fruit.txt >> LOG"
+  - "grep blueberry fruit.txt >> LOG 2>&1 "
   - "FILENAME=`basename $TRAVIS_REPO_SLUG`"
   - mv LOG ${TRAVIS_BUILD_DIR}/$FILENAME.log
 
