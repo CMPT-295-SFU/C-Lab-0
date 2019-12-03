@@ -26,4 +26,4 @@ after_failure:
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
-  - bash scripts/fail.sh
+  - bash scripts/pass.sh
