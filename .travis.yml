@@ -15,4 +15,10 @@ script:
   - "grep blueberry fruit.txt >> LOG 2>&1 "
   - "FILENAME=`basename $TRAVIS_REPO_SLUG`"
   - mv LOG ${TRAVIS_BUILD_DIR}/$FILENAME.log
+  
+before_install:
+
+after_failure:
+
+after_success:
 
