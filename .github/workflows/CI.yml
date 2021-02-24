@@ -27,7 +27,6 @@ jobs:
           mv LOG $FILENAME.log
           echo "LOG_ARTIFACT=$FILENAME.log" >> $GITHUB_ENV
 
-
       - name: set-artifacts
         id: artifact
         if: ${{ failure() || success() }}
@@ -51,7 +50,7 @@ jobs:
           SCP_HOST: ${{ secrets.HOST }}
           SCP_USERNAME: ${{ secrets.USERNAME }}
           SCP_KEY: ${{ secrets.KEY }}
-          SCP_SOURCE: "${{ steps.artifact.outputs.log }}
+          SCP_SOURCE: "${{ steps.artifact.outputs.log }}"
           SCP_TARGET: "CMPT295/LAB0/PASS"
           INPUT_STRIP_COMPONENTS: 1
         run: drone-scp
@@ -62,7 +61,7 @@ jobs:
           SCP_HOST: ${{ secrets.HOST }}
           SCP_USERNAME: ${{ secrets.USERNAME }}
           SCP_KEY: ${{ secrets.KEY }}
-          SCP_SOURCE: "${{ steps.artifact.outputs.log }}
+          SCP_SOURCE: "${{ steps.artifact.outputs.log }}"
           SCP_TARGET: "CMPT295/LAB0/PASS"
           INPUT_STRIP_COMPONENTS: 1
         run: drone-scp
