@@ -22,35 +22,42 @@ jobs:
       - name: commands
         run: |
           git log --pretty=format:'Name:%cn %nHash:%H%nTimestamp=%ci %n' -n 1 >> LOG
-          grep blueberry fruit.txt >> LOG 2>&1 
           FILENAME=`basename ${{ github.repository }}`
-          mv LOG $FILENAME.log
+          echo $FILENAME >> LOG
           echo "LOG_ARTIFACT=$FILENAME.log" >> $GITHUB_ENV
-
+          echo "JSON_ARTIFACT=${FILENAME}_Grade.json" >> $GITHUB_ENV
+          bash ./run.sh
+          
       - name: set-artifacts
         id: artifact
         if: ${{ failure() || success() }}
         run: |
           echo "##[set-output name=log;]$(echo ./$LOG_ARTIFACT)"
-
+          echo "##[set-output name=json;]$(echo ./$JSON_ARTIFACT)"
+          pip install pandas
+      
       - uses: actions/upload-artifact@v2
         if: ${{ failure() || success() }}
         with:
           name: my-artifact
           path: |
             ${{ steps.artifact.outputs.log }}
+            ${{ steps.artifact.outputs.json }}
 
       - name: Assign variable
+        if: ${{ failure() || success() }}
         id: secret
-        run: echo '::set-output name=secret::${{secrets.DISPATCH_PASSWORD}}'
-
+        run: |
+          mv LOG ${{ steps.artifact.outputs.log }}
+          echo '::set-output name=secret::${{secrets.DISPATCH_PASSWORD}}'
+      
       - name: copy-if-success
         if: ${{ success() && github.event_name == 'repository_dispatch' && github.event.action == 'grading' && github.event.client_payload.password == steps.secret.outputs.secret }}
         env:
           SCP_HOST: ${{ secrets.HOST }}
           SCP_USERNAME: ${{ secrets.USERNAME }}
           SCP_KEY: ${{ secrets.KEY }}
-          SCP_SOURCE: "${{ steps.artifact.outputs.log }}"
+          SCP_SOURCE: "${{ steps.artifact.outputs.log }}, ${{ steps.artifact.outputs.json }}"
           SCP_TARGET: "CMPT295/LAB0/PASS"
           INPUT_STRIP_COMPONENTS: 1
         run: drone-scp
@@ -61,7 +68,20 @@ jobs:
           SCP_HOST: ${{ secrets.HOST }}
           SCP_USERNAME: ${{ secrets.USERNAME }}
           SCP_KEY: ${{ secrets.KEY }}
-          SCP_SOURCE: "${{ steps.artifact.outputs.log }}"
-          SCP_TARGET: "CMPT295/LAB0/PASS"
+          SCP_SOURCE: "${{ steps.artifact.outputs.log }}, ${{ steps.artifact.outputs.json }}"
+          SCP_TARGET: "CMPT295/LAB0/FAIL"
           INPUT_STRIP_COMPONENTS: 1
         run: drone-scp
+
+
+
+
+# uses: appleboy/scp-action@master
+
+        # with:
+        #   host: ${{ secrets.HOST }}
+        #   username: ${{ secrets.USERNAME }}
+        #   key: ${{ secrets.KEY }}
+        #   source: "${{ steps.artifact.outputs.log }}, ${{ steps.artifact.outputs.json }}"
+        #   target: "CMPT295/ASS1/FAIL"
+        #   strip_components: 1
