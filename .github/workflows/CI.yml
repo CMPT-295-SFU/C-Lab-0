@@ -25,16 +25,14 @@ jobs:
           FILENAME=`basename ${{ github.repository }}`
           echo $FILENAME >> LOG
           echo "LOG_ARTIFACT=$FILENAME.log" >> $GITHUB_ENV
-          echo "JSON_ARTIFACT=${FILENAME}_Grade.json" >> $GITHUB_ENV
-          bash ./run.sh
+          grep blueberry fruit.txt >> LOG 2>&1 
           
       - name: set-artifacts
         id: artifact
         if: ${{ failure() || success() }}
         run: |
+          cp LOG $LOG_ARTIFACT
           echo "##[set-output name=log;]$(echo ./$LOG_ARTIFACT)"
-          echo "##[set-output name=json;]$(echo ./$JSON_ARTIFACT)"
-          pip install pandas
       
       - uses: actions/upload-artifact@v2
         if: ${{ failure() || success() }}
@@ -42,13 +40,12 @@ jobs:
           name: my-artifact
           path: |
             ${{ steps.artifact.outputs.log }}
-            ${{ steps.artifact.outputs.json }}
 
       - name: Assign variable
         if: ${{ failure() || success() }}
         id: secret
         run: |
-          mv LOG ${{ steps.artifact.outputs.log }}
+          cp LOG ${{ steps.artifact.outputs.log }}
           echo '::set-output name=secret::${{secrets.DISPATCH_PASSWORD}}'
       
       - name: copy-if-success
@@ -57,7 +54,7 @@ jobs:
           SCP_HOST: ${{ secrets.HOST }}
           SCP_USERNAME: ${{ secrets.USERNAME }}
           SCP_KEY: ${{ secrets.KEY }}
-          SCP_SOURCE: "${{ steps.artifact.outputs.log }}, ${{ steps.artifact.outputs.json }}"
+          SCP_SOURCE: "${{ steps.artifact.outputs.log }}"
           SCP_TARGET: "CMPT295/LAB0/PASS"
           INPUT_STRIP_COMPONENTS: 1
         run: drone-scp
@@ -68,7 +65,7 @@ jobs:
           SCP_HOST: ${{ secrets.HOST }}
           SCP_USERNAME: ${{ secrets.USERNAME }}
           SCP_KEY: ${{ secrets.KEY }}
-          SCP_SOURCE: "${{ steps.artifact.outputs.log }}, ${{ steps.artifact.outputs.json }}"
+          SCP_SOURCE: "${{ steps.artifact.outputs.log }}"
           SCP_TARGET: "CMPT295/LAB0/FAIL"
           INPUT_STRIP_COMPONENTS: 1
         run: drone-scp
